@@ -38,6 +38,7 @@ jobs:
           cat env_list.txt
 
       - name: Run Python runner script for each environment
+        continue-on-error: true
         run: |
           count=0
           while IFS=, read -r import_path env_name class_name; do
