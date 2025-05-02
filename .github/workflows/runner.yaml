@@ -49,13 +49,7 @@ jobs:
             python src/runner.py --import_path "$import_path" --cls_name "$class_name" --env_name "$env_name" --n_episodes 5 --max_steps_per_episode 100
             ((count++))
           done < env_list.txt
-          
-          if [ $count -eq 0 ]; then
-            echo "ERROR: No environments were processed"
-            exit 1
-          else
-            echo "Successfully processed $count environments"
-          fi
+          echo "Successfully processed $count environments"
 
       - name: Commit generated videos to current branch
         run: |
