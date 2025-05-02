@@ -34,6 +34,7 @@ def generate_videos(import_path, cls_name, env_name, n_episodes=10, max_steps_pe
             if terminated or truncated:
                 break
     env.close()
+    print(f"Videos for {env_name} saved in {video_dir}")
 
 if __name__ == "__main__":
     # Parse command line arguments
