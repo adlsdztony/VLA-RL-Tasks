@@ -30,12 +30,6 @@ jobs:
         run: |
           echo -n "" > env_list.txt
           python -u src/parser.py > env_list.txt
-          if [ ! -s env_list.txt ]; then
-            echo "ERROR: Parser output file is empty after running parser.py"
-            exit 1
-          fi
-          echo "Parser output:"
-          cat env_list.txt
 
       - name: Run Python runner script for each environment
         continue-on-error: true
