@@ -41,6 +41,7 @@ jobs:
         run: |
           count=0
           while IFS=, read -r import_path env_name class_name; do
+            echo "Read: $import_path, $env_name, $class_name"
             import_path=$(echo "$import_path" | xargs)
             env_name=$(echo "$env_name" | xargs)
             class_name=$(echo "$class_name" | xargs)
