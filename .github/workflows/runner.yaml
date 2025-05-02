@@ -28,11 +28,18 @@ jobs:
       - name: Run Python parsing script and capture output
         id: parse_output
         run: |
+          # Create or clean the env_list.txt file
+          echo -n "" > env_list.txt
+          
+          # Run the parser and append output to env_list.txt
           python src/parser.py > env_list.txt
+          
+          # Check if the file is empty
           if [ ! -s env_list.txt ]; then
-            echo "ERROR: Parser output file is empty or was not created properly"
+            echo "ERROR: Parser output file is empty after running parser.py"
             exit 1
           fi
+          
           echo "Parser output:"
           cat env_list.txt
 
@@ -44,7 +51,7 @@ jobs:
               echo "ERROR: Invalid line format in parser output. Expected 'import_path,env_name,class_name'"
               exit 1
             fi
-            echo "Running runner for: $import_path, $env_name, $class_name"
+            echo "Running for: $import_path, $env_name, $class_name"
             python src/runner.py --import_path "$import_path" --cls_name "$class_name" --env_name "$env_name" --n_episodes 5 --max_steps_per_episode 100
             ((count++))
           done < env_list.txt
