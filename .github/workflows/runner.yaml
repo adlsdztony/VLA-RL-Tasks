@@ -28,19 +28,12 @@ jobs:
       - name: Run Python parsing script and capture output
         id: parse_output
         run: |
-          # Create or clean the env_list.txt file
           echo -n "" > env_list.txt
-          
-          # Run the parser and append output to env_list.txt
-          python -u src/parser.py
           python -u src/parser.py > env_list.txt
-          
-          # Check if the file is empty
           if [ ! -s env_list.txt ]; then
             echo "ERROR: Parser output file is empty after running parser.py"
             exit 1
           fi
-          
           echo "Parser output:"
           cat env_list.txt
 
@@ -63,3 +56,11 @@ jobs:
           else
             echo "Successfully processed $count environments"
           fi
+
+      - name: Commit generated videos to current branch
+        run: |
+          git config --global user.name github-actions
+          git config --global user.email github-actions@github.com
+          git add ./task_videos/
+          git commit -m "Auto: Add generated files from CI run"
+          git push origin HEAD:${{ github.ref_name }}
