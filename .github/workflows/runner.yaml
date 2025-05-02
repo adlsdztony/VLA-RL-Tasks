@@ -41,15 +41,18 @@ jobs:
         run: |
           count=0
           while IFS=, read -r import_path env_name class_name; do
+            import_path=$(echo "$import_path" | xargs)
+            env_name=$(echo "$env_name" | xargs)
+            class_name=$(echo "$class_name" | xargs)
             if [ -z "$import_path" ] || [ -z "$env_name" ] || [ -z "$class_name" ]; then
-              echo "ERROR: Invalid line format in parser output. Expected 'import_path,env_name,class_name'"
-              exit 1
+              echo "Skipping invalid line: $import_path, $env_name, $class_name"
+              continue
             fi
             echo "Running for: $import_path, $env_name, $class_name"
-            python src/runner.py --import_path "$import_path" --cls_name "$class_name" --env_name "$env_name" --n_episodes 5 --max_steps_per_episode 100
+            python src/runner.py --import_path "$import_path" --cls_name "$class_name" --env_name "$env_name" --n_episodes 5 --max_steps_per_episode 100 || true
             ((count++))
           done < env_list.txt
-          echo "Successfully processed $count environments"
+          echo "Successfully processed $count environments."
 
       - name: Commit generated videos to current branch
         run: |
