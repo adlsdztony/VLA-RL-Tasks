@@ -1,5 +1,7 @@
 import os
 import re
+import csv
+import sys
 
 # List to store pairs (file path, class name)
 env_classes = []
@@ -48,8 +50,6 @@ def find_env_in_file(relative_file_path, file_path):
         print(f"Error processing file {file_path}: {str(e)}", file=sys.stderr)
 
 if __name__ == "__main__":
-    import sys
-    
     # Use the correct path format for any operating system
     tasks_dir = os.path.join("src", "tasks")
     
@@ -64,10 +64,20 @@ if __name__ == "__main__":
     # Find environment classes
     find_envs_in_directory(tasks_dir)
     
-    # Print out the collected pairs to stdout
-    for file_path, env_name, class_name in env_classes:
-        print(f"tasks.{file_path},{env_name},{class_name}")
-    
+    # Save collected data to CSV
+    csv_file = 'env_classes.csv'
+    try:
+        with open(csv_file, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            # Write header
+            writer.writerow(['Import Path', 'Env Name', 'Class Name'])
+            # Write data
+            for file_path, env_name, class_name in env_classes:
+                writer.writerow([f"tasks.{file_path}", env_name, class_name])
+        print(f"Data saved to {csv_file}")
+    except Exception as e:
+        print(f"Error writing to CSV file {csv_file}: {str(e)}", file=sys.stderr)
+
     # If no environments were found, report an error
     if not env_classes:
         print("Warning: No environment classes were found", file=sys.stderr)

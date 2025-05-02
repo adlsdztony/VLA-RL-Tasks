@@ -1,9 +1,8 @@
 import os
 import gymnasium as gym
 import time
-import argparse
 import importlib
-
+import csv
 from mani_skill.utils.wrappers.record import RecordEpisode
 
 def generate_videos(import_path, cls_name, env_name, n_episodes=10, max_steps_per_episode=100, video_dir="task_videos"):
@@ -35,24 +34,27 @@ def generate_videos(import_path, cls_name, env_name, n_episodes=10, max_steps_pe
                 break
     env.close()
     print(f"Videos for {env_name} saved in {video_dir}")
-    exit(0)
+
+def process_csv(csv_file):
+    """
+    Read the CSV file and process each environment listed to generate videos.
+    """
+    try:
+        with open(csv_file, mode='r', encoding='utf-8') as f:
+            reader = csv.reader(f)
+            # Skip header
+            next(reader)
+            for row in reader:
+                import_path, env_name, cls_name = row
+                # Call the video generation function for each environment
+                generate_videos(import_path, cls_name, env_name)
+                
+    except Exception as e:
+        print(f"Error reading CSV file {csv_file}: {str(e)}", file=sys.stderr)
 
 if __name__ == "__main__":
-    # Parse command line arguments
-    parser = argparse.ArgumentParser(description="Generate videos of agent interactions with custom environments.")
-    parser.add_argument('--import_path', type=str, required=True, help="The module path to import the environment class (e.g., 'JunhaoChen.card_stack_env')")
-    parser.add_argument('--cls_name', type=str, required=True, help="The environment class name (e.g., 'CardStackEnv')")
-    parser.add_argument('--env_name', type=str, required=True, help="The environment name (e.g., 'CardStack-v1')")
-    parser.add_argument('--n_episodes', type=int, default=5, help="Number of episodes to run")
-    parser.add_argument('--max_steps_per_episode', type=int, default=100, help="Maximum number of steps per episode")
-    parser.add_argument('--video_dir', type=str, default="task_videos", help="Directory to save videos")
+    # Path to the CSV file
+    csv_file = 'env_classes.csv'
     
-    args = parser.parse_args()
-    
-    # Generate videos using the provided arguments
-    generate_videos(import_path=args.import_path, 
-                    cls_name=args.cls_name, 
-                    env_name=args.env_name,
-                    n_episodes=args.n_episodes, 
-                    max_steps_per_episode=args.max_steps_per_episode, 
-                    video_dir=args.video_dir)
+    # Process the CSV file and generate videos for each environment
+    process_csv(csv_file)
