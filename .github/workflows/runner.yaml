@@ -10,7 +10,7 @@ on:
 
 jobs:
   run_script:
-    runs-on: [self-hosted, tyu-g1]
+    runs-on: self-hosted
 
     steps:
       - name: Checkout code
