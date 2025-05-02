@@ -1,6 +1,6 @@
 {
   "env_info": {
-    "env_id": "CardStack-v1",
+    "env_id": "CardStacky-v2",
     "env_kwargs": {
       "obs_mode": "state",
       "render_mode": "rgb_array"
