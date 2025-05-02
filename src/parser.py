@@ -28,7 +28,6 @@ def find_env_in_file(relative_file_path, file_path):
         if match:
             # Extract the env_name from the decorator
             env_name = match.group(1)
-            print(f"Found decorator in {relative_file_path}: {env_name}")
             
             # Look for the next line to find the class definition
             if i + 1 < len(lines):
@@ -37,7 +36,6 @@ def find_env_in_file(relative_file_path, file_path):
                 if class_match:
                     # Extract the class name
                     class_name = class_match.group(1)
-                    print(f"Found class: {class_name}")
                     # Store the result as a tuple (relative file path, class name)
                     import_path = relative_file_path.replace("\\", ".").replace(".py", "")
                     env_classes.append((import_path, env_name, class_name))

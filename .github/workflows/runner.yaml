@@ -28,14 +28,11 @@ jobs:
       - name: Run Python parsing script and capture output
         id: parse_output
         run: |
-          result=$(python src/parser.py)
-          echo "parser_output=$result" >> $GITHUB_ENV
+          python src/parser.py > env_list.txt
 
       - name: Run Python runner script for each environment
         run: |
-          IFS=$'\n'  # Set Internal Field Separator to newline
-          for line in $parser_output; do
-            IFS=',' read -r import_path env_name env_class <<< "$line"
-            echo "Running runner.py for Env: $env_name, Class: $env_class"
-            python src/runner.py --import_path "$import_path" --env_name "$env_name" --env_class "$env_class"
-          done
+          while IFS=, read -r import_path env_name class_name; do
+            echo "Running for: $import_path, $env_name, $class_name"
+            python src/runner.py --import_path "$import_path" --cls_name "$class_name" --env_name "$env_name" --n_episodes 5 --max_steps_per_episode 100
+          done < env_list.txt
