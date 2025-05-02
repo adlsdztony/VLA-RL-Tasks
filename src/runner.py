@@ -15,7 +15,7 @@ def generate_videos(import_path, cls_name, env_name, n_episodes=10, max_steps_pe
     getattr(module, cls_name)
 
     # Create the environment instance using the env_name and other configurations
-    env = gym.make(env_name, obs_mode="state", render_mode="rgb_array", sim_backend="cpu", render_backend="cpu")
+    env = gym.make(env_name, obs_mode="state", render_mode="rgb_array", )
     
     # Set up the video saving directory
     video_dir = os.path.join(video_dir, env_name)
