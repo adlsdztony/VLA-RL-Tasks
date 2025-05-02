@@ -1,0 +1,41 @@
+name: Execute Runner on Push
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  run_script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run Python parsing script and capture output
+        id: parse_output
+        run: |
+          result=$(python src/parser.py)
+          echo "parser_output=$result" >> $GITHUB_ENV
+
+      - name: Run Python runner script for each environment
+        run: |
+          IFS=$'\n'  # Set Internal Field Separator to newline
+          for line in $parser_output; do
+            IFS=',' read -r import_path env_name env_class <<< "$line"
+            echo "Running runner.py for Env: $env_name, Class: $env_class"
+            python src/runner.py --import_path "$import_path" --env_name "$env_name" --env_class "$env_class"
+          done
