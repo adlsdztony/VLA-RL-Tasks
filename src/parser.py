@@ -66,7 +66,7 @@ if __name__ == "__main__":
     
     # Print out the collected pairs to stdout
     for file_path, env_name, class_name in env_classes:
-        print(f"{file_path},{env_name},{class_name}")
+        print(f"tasks.{file_path},{env_name},{class_name}")
     
     # If no environments were found, report an error
     if not env_classes:
