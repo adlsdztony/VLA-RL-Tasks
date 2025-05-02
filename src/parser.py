@@ -41,7 +41,7 @@ def find_env_in_file(relative_file_path, file_path):
                     env_classes.append((import_path, env_name, class_name))
 
 # Run the search in the current directory (or a specific path)
-find_envs_in_directory(".\\src\\tasks")
+find_envs_in_directory(".\src\tasks")
 
 # Print out the collected pairs
 for file_path, env_name, class_name in env_classes:
