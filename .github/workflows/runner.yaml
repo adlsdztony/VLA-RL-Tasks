@@ -60,6 +60,7 @@ jobs:
         run: |
           git config --global user.name github-actions
           git config --global user.email github-actions@github.com
+          git remote remove origin
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Junhaoo-Chen/VLA-RL-Tasks.git
           git add ./task_videos/
           git commit -m "Auto: Add generated files from CI run"
