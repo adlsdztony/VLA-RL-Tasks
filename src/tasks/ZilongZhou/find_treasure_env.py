@@ -218,38 +218,6 @@ class FindTreasureEnv(BaseEnv):
                 obs[f"card_{i}_vel"] = card.linear_velocity
         
         return obs
-        
-    def compute_dense_reward(self, obs: Any, action: torch.Tensor, info: Dict):
-        """Compute a dense reward signal to guide learning"""
-        with torch.device(self.device):
-            reward = torch.zeros(self.num_envs, device=self.device)
-            
-            # Success reward
-            success = info["success"]
-            reward = torch.where(success, reward + 10.0, reward)
-            
-            # Reward for having target card close to goal
-            target_card_pos = self.cards[self.target_idx].pose.p
-            target_dist = torch.linalg.norm(
-                target_card_pos[:, :2] - self.target_position[:, :2], dim=-1)
-            reward += torch.exp(-5.0 * target_dist) * 2.0
-            
-            # Penalty for having wrong cards at goal
-            wrong_at_goal = info["wrong_at_goal"]
-            reward = torch.where(wrong_at_goal, reward - 1.0, reward)
-            
-            # Reward for getting the TCP close to target card
-            tcp_pos = self.agent.tcp.pose.p
-            tcp_to_target = torch.linalg.norm(
-                target_card_pos - tcp_pos, dim=-1)
-            reward += torch.exp(-10.0 * tcp_to_target) * 0.5
-            
-            return reward
-    
-    def compute_normalized_dense_reward(self, obs: Any, action: torch.Tensor, info: Dict):
-        """Normalize the dense reward"""
-        max_reward = 12.5  # Maximum possible reward (success + all intermediate rewards)
-        return self.compute_dense_reward(obs, action, info) / max_reward
 
     @property
     def _default_sensor_configs(self):
